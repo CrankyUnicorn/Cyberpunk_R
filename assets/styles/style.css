@@ -1,0 +1,524 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+:root {
+	
+	--water:#d1f7ff;
+	--eblue:#05d9e8;
+	--oldblue:#005678;
+	--deepblue:#01012b;
+	
+	--darkgray:#050014;
+	--lightgray:#1c1829;
+
+	--emagenta:#ff005b;
+	--palepink:#fffaff;
+	
+	--cursor_a:url(../../assets/cursors/cursor_a.png);
+	--cursor_b:url(../../assets/cursors/cursor_b.png);
+}
+
+
+
+
+
+@-webkit-keyframes background_gradiant {
+    0%{background-position:25% 50%}
+    50%{background-position:75% 50%}
+    100%{background-position:25% 50%}
+}
+@keyframes background_gradiant {
+    0%{background-position:25% 50%}
+    50%{background-position:75% 50%}
+    100%{background-position:25% 50%}
+}
+
+
+@keyframes fadein {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+
+@keyframes slidedown {
+  from {height: 0px;}
+  to {height: 40px;}
+}
+
+
+@keyframes openpanel {
+    from{height: 100px;}
+    to{height: 0px;}
+}
+
+
+@keyframes translateXleft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+@keyframes softglow{
+	from{text-shadow: 0px 0px 4px var(--emagenta);} 
+	to {text-shadow: 0px 0px 8px var(--emagenta);}
+}
+
+
+html{
+	
+	/*for moz only*/	
+	overflow-y: scroll;
+	scrollbar-color:  var(--darkgray) var(--emagenta);
+	scrollbar-width: thin;
+
+    cursor: var(--cursor_a), auto;
+    
+    background: linear-gradient(270deg, var(--lightgray),var(--lightgray), var(--emagenta));
+    background-size: 600% 100%;
+    
+    height:100%;
+       
+    -webkit-animation: background_gradiant 30s ease infinite;
+    animation: background_gradiant 30s ease infinite;
+	
+}
+
+body::-webkit-scrollbar {
+	width: 10px;               /* width of the entire scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+
+	background: var(--emagenta);        /* color of the tracking area */
+}
+
+body::-webkit-scrollbar-thumb {
+	background-color: var(--darkgray);    /* color of the scroll thumb */
+	border-radius: 0px;       /* roundness of the scroll thumb */
+	border-left: 1px solid var(--emagenta);  /* creates padding around scroll thumb */
+}
+
+
+body{
+	 	
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+	box-sizing: border-box;         /* Opera/IE 8+ */
+	
+	scrollbar-color: var(--darkgray) var(--emagenta);
+   
+    background-image:url("../../assets/images/background_vains.png");
+	background-repeat: repeat;
+
+    height:100%;
+    margin: 0px;
+    padding: 30px 10px 10px 10px;
+
+    color: var(--eblue);
+	font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+	letter-spacing: 0.1em;
+}
+
+
+h1, h2, h3 , h4, h5, h6{
+    margin: 0;
+    padding: 0;
+	font-weight: normal;
+	filter: drop-shadow(0px 0px 6px var(--oldblue));
+	
+}
+
+p{
+    margin: 0;
+    padding: 0;
+	font-weight: lighter;
+	font-size: 16px;
+	word-spacing: 0.1em;
+}
+
+
+input, select, textarea{
+    color: var(--palepink);
+	letter-spacing: 0.2em;
+	
+    border: none;
+    outline: var(--eblue) solid 1px;
+    margin-right: 5px;
+    font-family : inherit;
+        
+	background-color: var(--darkgray);
+	
+	cursor: var(--cursor_b), pointer;
+}
+
+input[type="submit" i] {
+    appearance: none;
+	color: var(--emagenta);
+	letter-spacing: normal;
+    margin-right: 0px;
+    font-family : inherit;
+        
+	background-color: var(--darkgray);
+	cursor: var(--cursor_b), pointer;
+}
+
+a{
+	letter-spacing: normal;
+	cursor: var(--cursor_b), pointer;
+}
+
+table{
+    border-spacing: 0px;
+    border-collapse: collapse;
+    
+}
+
+th{
+    font-weight: 400;
+}
+
+td, th{
+    padding: 5px; 
+}
+
+
+/*FOOT -----------------------------------------------------------------------------*/
+.pc_footer{
+	z-index:5;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-color: var(--darkgray);
+    display: inline-block;
+}
+
+.pc_footer::after {
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent  transparent var(--darkgray) transparent;
+  left: 50px;
+  bottom: 10px;
+}
+
+.pc_footer::after {
+  position: absolute;
+  content: '';
+  width: 50px;
+  height: 20px;
+  border-style: solid;
+  left: 0;
+  bottom: 10px;
+}
+
+/*NAVBAR ------------------------------------------------------------------------------*/
+.pc_entrance_navbar{
+	z-index:5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background-color: var(--darkgray);
+    display: inline-block;
+    overflow: hidden;
+    border-bottom: 1px solid var(--emagenta);
+	filter: drop-shadow(0px 0px 6px #000055);
+	
+	animation: slidedown 400ms ease-in-out 1 alternate;
+}
+
+.pc_entrance_navbar::after {
+  position: absolute;
+  content: '';
+  width: 10px;
+  height: 40px;
+  right: 0;
+  top: 0;
+  background-color: var(--emagenta); 
+}
+
+    /*left side*/
+.pc_entrance_navbar .pc_navbar_left{
+    float: left;
+    width: 50%;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.pc_entrance_navbar .pc_navbar_left a{
+    float: left;
+    text-decoration: none;
+    color: var(--eblue);
+    height: 40px;
+    padding: 8px;
+	padding-right: 15px;
+	padding-left: 15px;
+	animation-name: fadein;
+    animation-duration: 600ms;
+	border-left: 1px solid var(--emagenta);
+}
+
+.pc_entrance_navbar .pc_navbar_left a:hover{
+    color: #fff;
+    background-color: var(--emagenta);
+	transition: 200ms;
+}
+
+    /*right side*/
+.pc_entrance_navbar .pc_navbar_right{
+    float: right;
+    width: 50%;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.pc_entrance_navbar .pc_navbar_right a{
+    float: right;
+	text-decoration: none;
+    color: var(--eblue);
+    height: 40px;
+    padding: 8px;
+	padding-right: 15px;
+	padding-left: 15px;
+	animation-name: fadein;
+    animation-duration: 600ms;
+}
+
+.pc_entrance_navbar .pc_navbar_right a:hover{
+    color: var(--palepink);
+    background-color: var(--emagenta);
+	transition: 200ms;
+}
+
+    /*form*/
+.pc_entrance_navbar .pc_navbar_right form{
+    float: right;
+    padding: 0px 0px 0px 7px;
+    animation-duration: 600ms;
+}
+
+	/*submit button*/
+.pc_submit_button{
+	
+	float: right;
+	text-decoration: none;
+	outline: 0px solid transparent;
+	font-size: 20px;
+    color: var(--eblue);
+    height: 40px;
+    padding: 8px 30px 8px 16px;
+
+	animation: softglow 1s linear infinite alternate;
+	
+}
+
+.pc_submit_button:hover{
+    color: var(--palepink);
+    background-color: var(--emagenta);
+	transition: 200ms;
+}
+
+/*INTRO MAP ---------------------------------------------------------------------------*/
+.pc_intro_div{
+	z-index:1;
+	
+    width:100%;
+    
+    margin-top: 50px;
+	
+}
+
+
+.pc_intro_panel{
+    padding-top: 40px;
+	padding-bottom: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+	height: auto;
+	overflow: hidden;
+	
+	background-image: radial-gradient(var(--lightgray), var(--darkgray));
+	border: 1px solid var(--emagenta);
+	
+	filter: drop-shadow(0px 0px 6px #000055);
+    
+    
+    animation: translateXleft 400ms ease-in-out 1 backwards;
+    animation-delay: 200ms;
+    
+}
+.pc_intro_panel:after {
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 30px 30px 0;
+  border-color: transparent var(--emagenta) transparent transparent;
+  right: 0;
+  top: 0;
+}
+
+
+.pc_expanding_panel{
+    padding-top: 40px;
+	padding-bottom: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 700px;
+	height: 0px;
+	overflow: hidden;
+	
+	background-image: radial-gradient(var(--lightgray), var(--darkgray));
+	border: 1px solid var(--emagenta);
+	
+	filter: drop-shadow(0px 0px 6px #000055);
+	
+	transition: height 2s;
+}
+.pc_expanding_panel:after {
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 30px 30px 0;
+  border-color: transparent var(--emagenta) transparent transparent;
+  right: 0;
+  top: 0;
+}
+.pc_expanding_panel:focus{
+	outline:0;
+	height: 450px;
+}
+
+.pc_intro_text{
+    padding-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 600px;
+	color: var(--water);
+}
+
+.pc_forms_text{
+    padding-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+	color: var(--water);
+}
+
+.pc_center{
+	margin-top: 0px;
+	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	text-align:center;
+}
+
+.pc_registry{
+    width: 500px;
+    text-align:left;
+    padding-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pc_form_register input, select, textarea{
+ 
+}
+
+.pc_match{
+    width: 400px;
+    text-align: left;
+    padding-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pc_form_match input{
+    color: var(--darkbrown);
+    border: 0;
+    outline: var(--coffeelait) solid 2px;
+    margin-right: 0px;
+    
+    background-color: var(--laitcoffee);
+}
+
+.pc_form_line{
+    display: table; 
+    width: 100%; 
+    margin-bottom: 10px;
+}
+
+.pc_form_line input{
+    box-sizing: border-box; 
+    display: table-cell; 
+    width: 100%;
+}
+
+.pc_form_line label{
+    box-sizing: border-box; 
+    display: table-cell; 
+    width: 200px;
+    font-size: 16px;
+    color: var(--eblue);
+}
+
+.pc_form_register input[type="submit" i] {
+    float:right; 
+    margin:0; 
+    padding:5px 10px 5px 10px;
+}
+.pc_form_register input[type="submit" i]:hover {
+    outline: var(--emagenta);
+    color:var(--palepink);
+    background-color: var(--emagenta);
+}
+
+.pc_intro_table{
+    padding-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+}
+
+.pc_table{
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--water);
+   
+    border-spacing: 0;
+}
+
+.pc_selected_match{
+    padding: 0px;
+}
+.pc_selected_match:hover{
+    background-color: var(--emagenta);
+}
+
+.pc_evenColor{
+    border: 1px solid var(--emagenta);
+    background-color: var(--darkgray);
+}
+
+.pc_oddColor{
+    border: 1px solid var(--emagenta);
+    background-color: var(--deepblue);
+}
+
