@@ -19,8 +19,6 @@
 
 
 
-
-
 @-webkit-keyframes background_gradiant {
     0%{background-position:25% 50%}
     50%{background-position:75% 50%}
@@ -40,8 +38,9 @@
 
 
 @keyframes slidedown {
-  from {height: 0px;}
-  to {height: 40px;}
+  0% {height: 0px; overflow: hidden;}
+  99% {height: 40px; overflow: hidden;}
+  100% {height: 40px; overflow: visible;}
 }
 
 
@@ -68,7 +67,14 @@
 	to {text-shadow: 0px 0px 8px var(--emagenta);}
 }
 
+:focus {outline:none !important;}
+::-moz-focus-inner {border:none !important;}
 
+::-moz-selection{background-color:#00000000;}
+::selection{background-color:#00000000;}
+
+
+/*HTML------------------------------------------------------------------------------------*/
 html{
 	
 	/*for moz only*/	
@@ -147,11 +153,11 @@ input, select, textarea{
     color: var(--palepink);
 	letter-spacing: 0.2em;
 	
-    border: none;
-    outline: var(--eblue) solid 1px;
     margin-right: 5px;
     font-family : inherit;
         
+    border: none;
+
 	background-color: var(--darkgray);
 	
 	cursor: var(--cursor_b), pointer;
@@ -230,13 +236,22 @@ td, th{
     left: 0;
     right: 0;
     height: 40px;
+    min-width: 600px;
     background-color: var(--darkgray);
     display: inline-block;
-    overflow: hidden;
+    overflow:visible;
     border-bottom: 1px solid var(--emagenta);
 	filter: drop-shadow(0px 0px 6px #000055);
 	
 	animation: slidedown 400ms ease-in-out 1 alternate;
+}
+
+@media only screen and (min-width: 870px) {
+    .pc_entrance_navbar{
+        
+        overflow: hidden;
+    }
+   
 }
 
 .pc_entrance_navbar::after {
@@ -249,42 +264,101 @@ td, th{
   background-color: var(--emagenta); 
 }
 
-    /*left side*/
+/*left side*/
 .pc_entrance_navbar .pc_navbar_left{
     float: left;
-    width: 50%;
-    display: inline-block;
+    width: 150px;
+    height: 40px;
+    display:block;
     overflow: hidden;
+}.pc_entrance_navbar .pc_navbar_left:hover{
+    overflow: visible;
+}
+@media only screen and (min-width: 870px) {
+    .pc_entrance_navbar .pc_navbar_left{
+        width: 410px;
+        display: inline-block;
+        overflow: hidden;
+    }
+}    
+
+.pc_nav_menu{
+    box-sizing:border-box;
+    background-color:var(--emagenta); 
+    border:none;
+    width: 50px;
+    height: 40px;
+    padding-top: 6px;
+    margin: 0px;
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'%3E%3Crect width='40' height='6'%3E%3C/rect%3E%3Crect y='12' width='40' height='6'%3E%3C/rect%3E%3Crect y='24' width='40' height='6'%3E%3C/rect%3E%3C/svg%3E");
+}
+@media only screen and (min-width: 870px) {
+    .pc_nav_menu{
+        float:left;
+        display: inline-block;
+        content:'';
+        width: 10px;
+        height: 40px;
+    }
 }
 
-.pc_entrance_navbar .pc_navbar_left a{
+.pc_nav_button{
+    box-sizing:border-box;
     float: left;
     text-decoration: none;
     color: var(--eblue);
+    background-color: var(--darkgray);
+    width: 150px;
     height: 40px;
     padding: 8px;
 	padding-right: 15px;
 	padding-left: 15px;
 	animation-name: fadein;
     animation-duration: 600ms;
-	border-left: 1px solid var(--emagenta);
+	border-right: 1px solid var(--emagenta);
+	border-top: 1px solid var(--emagenta);
+	border-left: 5px solid var(--emagenta);
 }
-
-.pc_entrance_navbar .pc_navbar_left a:hover{
+.pc_nav_button:hover{
     color: #fff;
     background-color: var(--emagenta);
 	transition: 200ms;
 }
+@media only screen and (min-width: 870px) {
+    .pc_nav_button{
+        width: auto;
+        border: 0px solid var(--emagenta);
+        border-left: 1px solid var(--emagenta);
+    }
+}
 
-    /*right side*/
+.pc_last_nav_button{
+    border-bottom: 1px solid var(--emagenta);
+}
+@media only screen and (min-width: 870px) {
+    .pc_last_nav_button{
+        border-right: 1px solid var(--emagenta);
+    }
+}
+
+/*right side*/
 .pc_entrance_navbar .pc_navbar_right{
     float: right;
-    width: 50%;
+    min-width: 380px;
     display: inline-block;
     overflow: hidden;
 }
+@media only screen and (min-width: 610px) {
+    .pc_entrance_navbar .pc_navbar_right{
+        
+        min-width: 450px;
+        display: inline-block;
+        overflow: hidden;
+    }
+} 
 
 .pc_entrance_navbar .pc_navbar_right a{
+    box-sizing:border-box;
     float: right;
 	text-decoration: none;
     color: var(--eblue);
@@ -309,12 +383,24 @@ td, th{
     animation-duration: 600ms;
 }
 
+.pc_entrance_navbar .pc_navbar_right form input{
+    border: none;
+    outline: var(--eblue) solid 1px;
+    margin-top: 10px;
+    width:75px; 
+}
+@media only screen and (min-width: 610px) {
+    .pc_entrance_navbar .pc_navbar_right form input{
+        width:100px; 
+    }
+}
+
 	/*submit button*/
 .pc_submit_button{
 	
 	float: right;
 	text-decoration: none;
-	outline: 0px solid transparent;
+	outline: 0px solid transparent ! important;
 	font-size: 20px;
     color: var(--eblue);
     height: 40px;
@@ -346,7 +432,8 @@ td, th{
 	padding-bottom: 60px;
     margin-left: auto;
     margin-right: auto;
-    width: 700px;
+    max-width: 700px;
+    min-width: 600px;
 	height: auto;
 	overflow: hidden;
 	
@@ -490,6 +577,7 @@ td, th{
     background-color: var(--emagenta);
 }
 
+/*Table-----------------------------------------------------------------------------*/
 .pc_intro_table{
     padding-top: 10px;
     margin-left: auto;
@@ -505,13 +593,20 @@ td, th{
     border-spacing: 0;
 }
 
-.pc_selected_match{
+.pc_selected{
     padding: 0px;
 }
-.pc_selected_match:hover{
+.pc_selected:hover{
     background-color: var(--emagenta);
 }
+.pc_selected:focus{
+    background-color: var(--eblue);
+    
+    border: 1px solid var(--emagenta);
+    color:var(--deepblue);
+}
 
+/*color bands for tables and such*/
 .pc_evenColor{
     border: 1px solid var(--emagenta);
     background-color: var(--darkgray);
@@ -522,3 +617,176 @@ td, th{
     background-color: var(--deepblue);
 }
 
+/*SUDO TABLE -------------------------------------------------------------------*/
+.pseudo_table{
+    display:table;
+}
+.pseudo_tr{
+    display:table-row;
+}
+.pseudo_tr span{
+    display:table-cell;
+}
+
+/*SELECT BOX-------------------------------------------------------------------*/
+
+.pc_selectbox{
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--water);
+    border:1px solid var(--emagenta);
+    border-radius: 0;
+    overflow-y: scroll;
+	scrollbar-color:  var(--darkgray) var(--emagenta);
+	scrollbar-width: thin;
+}
+
+.pc_selectbox_item:checked{
+    background: var(--emagenta) !important;
+    color:var(--deepblue) !important;
+    box-shadow: 0 0 10px 100px var(--emagenta) inset;
+}
+
+
+.pc_selectbox::-webkit-scrollbar {
+    
+    width: 10px;   
+  }
+.pc_selectbox::-webkit-scrollbar-track {
+    border: var(--emagenta);
+    background-color: var(--darkgray);
+}
+.pc_selectbox::-webkit-scrollbar-thumb {
+    background-color: var(--emagenta);
+    border: 1px solid var(--emagenta);
+}
+
+
+.pc_selectbox_item{
+    padding: 5px;
+}
+.pc_selectbox_item:hover, .pc_selectbox_item:focus{
+    color:var(--deepblue);
+    background-color: var(--emagenta);
+    
+}
+
+
+.pc_selectbox_evenColor{
+    background-color: var(--darkgray);
+}
+
+.pc_selectbox_oddColor{
+    background-color: var(--lightgray);
+}
+
+/*STATS BLOCK----------------------------------------------------------------------*/
+.pc_stats_panel{
+
+    padding: 0px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content:space-between;
+    align-items:flex-start;
+    width: 520px;
+    height: 180px;
+    margin-left: auto;
+    margin-right: auto;
+	overflow: hidden;
+	background:none;
+}
+
+.pc_stats_block{
+    margin: 10px;
+    padding: 5px;
+    width: 70px;
+	height: 70px;
+	overflow: hidden;
+	
+	background-image: radial-gradient(var(--lightgray), var(--darkgray));
+	border: 1px solid var(--emagenta);
+	
+	filter: drop-shadow(0px 0px 6px #000055);
+    
+    animation: fadein 400ms ease-in-out 1 backwards;
+    animation-delay: 600ms;
+}
+
+.pc_stats_block div{
+    margin: 0px;
+    padding: 0px;
+    line-height: 100%;
+}
+
+.pc_stats_corner_up{
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 20px 20px 0;
+  border-color: transparent var(--emagenta) transparent transparent;
+  right: 0;
+  top: 0;
+}
+.pc_stats_corner_up:hover {
+    border-color: transparent var(--palepink   ) transparent transparent;
+}
+
+.pc_stats_corner_down{
+    position: absolute;
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 20px 20px;
+    border-color: transparent transparent  var(--eblue) transparent;
+    right: 0;
+    bottom: 0;
+  }
+  .pc_stats_corner_down:hover {
+    border-color: transparent transparent  var(--palepink   ) transparent;
+  }
+  
+.pc_stats_block_header{
+    margin:0;
+    margin-left:2px;
+    padding: 0;
+    color: var(--palepink);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.pc_stats_block input{
+    overflow: hidden;
+    background-color: #00000000;
+}
+.pc_stats_block_label{
+    margin:0px;
+    padding: 0px;
+    color: var(--eblue);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    
+}
+.pc_stats_block_value_max{
+    min-width: 15px;
+    max-width: 30px;
+    margin:0px;
+    padding: 0px;
+    padding-left: 2px;
+    color: var(--emagenta);
+    font-size: 14px;
+    letter-spacing: 0.1em;
+}
+.pc_stats_block_value{
+    display: block;
+    width: 50px;
+    margin:0px;
+    padding: 0px;
+    color: var(--emagenta);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}

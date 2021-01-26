@@ -2,11 +2,11 @@
   
   <div class="pc_navbar_left">
     
-    <a href="#" style="background-color:var(--emagenta);border:none"></a>
-    <a href="page_intro.php">Intro</a>
-    <a href="page_codex.php">Codex</a>
-    <a href="page_about.php">About</a>
-    <a href="page_contact.php" style="border-right: 1px solid var(--emagenta)">Contact</a>
+    <div class="pc_nav_menu"></div>
+    <a href="page_intro.php" class="pc_nav_button">Intro</a>
+    <a href="page_codex.php" class="pc_nav_button">Codex</a>
+    <a href="page_about.php" class="pc_nav_button">About</a>
+    <a href="page_contact.php" class="pc_nav_button pc_last_nav_button">Contact</a>
   </div>
   <div class="pc_navbar_right">
   
@@ -14,18 +14,17 @@
 					
 			 <?php
 			if(isset($_SESSION['u_name'])){
-				echo 
-             "<input type='submit' value='logout' name='logout' class='pc_submit_button'>";
-				}else{
+
+        echo 
+        "<input type='submit' value='Logout' name='logout' class='pc_submit_button' style='margin-top: 0px; width:auto;'>";
+      }else{
 							
 				echo
-              "<input type='email' name='userEmail' id='pc_email' style='width:100px; margin-top: 10px'>
-              <input type='password' name='userPassword' id='pc_password' style='width:100px; margin-top: 10px'>
-              <input type='submit' value='Login' name='login' class='pc_submit_button'>";
-			  
+        "<input type='email' name='userEmail' id='pc_email'>
+        <input type='password' name='userPassword' id='pc_password'>
+        <input type='submit' value='Login' name='login' class='pc_submit_button' style='margin-top: 0px; width:auto;'>";
 			}
 			?>
-					 
 					 
 		</form>
 
@@ -33,7 +32,7 @@
 
       if(isset($_SESSION['u_name'])){
         
-        echo "<a  href='game_match.php'>".$_SESSION['u_name']."</a>";
+        echo "<a href='page_pc.php'>".$_SESSION['u_name']."</a>";
       }else{
 
         echo "<a href='page_signin.php'><u>Sign In</u></a>";

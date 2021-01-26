@@ -2,7 +2,7 @@
 
 <?php
 
-	$keywordOne = "user";
+	$keywordOne = "pc";
 	$keywordTwo = "pc";
 
 	$tableName = $keywordOne."_".$keywordTwo;
@@ -15,24 +15,40 @@
 	$tableTwoName = $keywordTwo;
 	$columnTableTwoName = "";
 	
-	$rowColorState = 0;
-	$rowColor = "pc_evenColor";
-
 
 	$sql = "SELECT * FROM $tableTwoName WHERE id IN
 	(SELECT $columnTwoName FROM $tableName WHERE $columnOneName IN 
-	(SELECT id FROM $tableOneName WHERE $columnTableOneName = '".$_SESSION["u_email"]."'))";
+	(SELECT id FROM $tableOneName WHERE $columnTableOneName = '".$_SESSION["u_pc"]."'))";
 
 	$stmt = mysqli_query( $connection, $sql);
 
-		
-	echo "<br><div class='pc_intro_table'>";
+?>
 	
-	echo "<select class='pc_center pc_selectbox' form='pc_select' name='pc_selected' size='5' multiple='multiple'>";
+	<div class="pc_stats_panel">
+		<form action="update_pc_status.php" method="$_POST" id="status_form	">
+
+		<div class="pc_stats_block">
+			<div class="pc_stats_block_header">DEX</div>
+			<div style="margin-top: 4px;">
+				<div style="height:16px; width:auto; display:none;">
+					<label class="pc_stats_block_label">|</label><input class="pc_stats_block_value_max" id="dex_max_value" name="dex_max_value" value=
+					<?php ?>>
+				</div>
+				<div style="height:auto; width:auto; ">
+					<input class="pc_stats_block_value" id="dex_value" name="dex_value" value=
+					<?php ?>>
+				</div>
+			</div>
+			
+			<div onclick="up_value('dex')" class='pc_stats_corner_up'></div>
+			<div onclick="down_value('dex')" class='pc_stats_corner_down'></div>
+		</div>
+
+		</form>
+	</div>
 	
-	//echo "<option value='none' selected disabled hidden>Select an Character</option>"; 
-	
-	if($stmt != false){
+<?php
+	/*if($stmt != false){
 		
 		while($row = mysqli_fetch_assoc($stmt)){
 			if ($row['active'] == 0) {
@@ -71,5 +87,5 @@
 	}		
 
 	echo "</div>";
-	
+	*/
 ?>

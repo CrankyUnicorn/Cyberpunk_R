@@ -22,17 +22,17 @@ $columnTwoNameTwo = "pc_id";
 		$characterName = ms_escape_string($_POST["characterName"]);
 
 		if(empty($characterName)){
-			header("Location: ".$filePath."?".$fileName."=match_empty");
+			header("Location: ".$filePath."?".$fileName."=pc_empty");
 			exit();
 		}else{
 
 			if(strlen($characterName)>60){
-				header("Location: ".$filePath."?".$fileName."=match_overflow");
+				header("Location: ".$filePath."?".$fileName."=pc_overflow");
 				exit();
 			}else{
 
 				if(!preg_match("/^[a-zA-Z0-9-._ ?!]*$/",$characterName)){
-					header("Location: ".$filePath."?".$fileName."=match_invalid");
+					header("Location: ".$filePath."?".$fileName."=pc_invalid");
 				exit();
 				}else{
 					
@@ -80,7 +80,7 @@ $columnTwoNameTwo = "pc_id";
 							
 						}
 
-						header("Location: ".$filePathTarget."?".$fileName." = match_success");
+						header("Location: ".$filePathTarget."?".$fileName." = pc_success");
 						exit();	
 					
 				}

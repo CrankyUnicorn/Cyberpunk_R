@@ -27,7 +27,9 @@
 		<meta name="DC.coverage" content="World" lang="en">
 		<meta name="DC.subject" content="Self Service" lang="en">
 
-        <link rel="icon" href="assets/icons/favicon.png">
+				<link rel="icon" href="assets/icons/favicon.png">
+				
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         
         <link href="assets/styles/style.css" rel="stylesheet" type="text/css">
 
@@ -36,5 +38,7 @@
         
     </head>
     <body>
-    <?php session_start(); ?>
-    <?php include 'page_navbar.php'; ?>
+		
+		<?php session_start(); ?>
+		
+		<?php include 'page_navbar.php'; ?>
