@@ -67,17 +67,45 @@
 	to {text-shadow: 0px 0px 8px var(--emagenta);}
 }
 
-:focus {outline:none !important;}
+@keyframes blinklight {
+    0% {background-color: var(--lightgray);
+        filter: drop-shadow(0px 0px 2px var(--lightgray)); }
+    1% {background-color: var(--eblue);
+        filter: drop-shadow(0px 0px 2px var(--eblue));}
+    50% {background-color: var(--eblue);
+            filter: drop-shadow(0px 0px 2px var(--eblue));}
+    51% {background-color: var(--lightgray);
+            filter: drop-shadow(0px 0px 2px var(--lightgray));}
+    100% {background-color: var(--lightgray);
+        filter: drop-shadow(0px 0px 2px var(--lightgray));}
+  }
+
+select:focus {outline:none;}
+input:focus {outline:none;}
 ::-moz-focus-inner {border:none !important;}
 
 ::-moz-selection{background-color:#00000000;}
 ::selection{background-color:#00000000;}
 
 
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: var(--oldblue);
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--oldblue);
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: var(--oldblue);
+  }
+
 /*HTML------------------------------------------------------------------------------------*/
 html{
 	
-	/*for moz only*/	
+    /*for moz only*/
+    overflow:visible;	
 	overflow-y: scroll;
 	scrollbar-color:  var(--darkgray) var(--emagenta);
 	scrollbar-width: thin;
@@ -85,10 +113,11 @@ html{
     cursor: var(--cursor_a), auto;
     
     background: linear-gradient(270deg, var(--lightgray),var(--lightgray), var(--emagenta));
-    background-size: 600% 100%;
+    background-size: 600% 600%;
     
-    height:100%;
-       
+    /* height:auto; */
+    height:auto;
+    
     -webkit-animation: background_gradiant 30s ease infinite;
     animation: background_gradiant 30s ease infinite;
 	
@@ -119,7 +148,8 @@ body{
 	scrollbar-color: var(--darkgray) var(--emagenta);
    
     background-image:url("../../assets/images/background_vains.png");
-	background-repeat: repeat;
+    background-repeat: repeat;
+    background-attachment: fixed;
 
     height:100%;
     margin: 0px;
@@ -174,9 +204,11 @@ input[type="submit" i] {
 	cursor: var(--cursor_b), pointer;
 }
 
-a{
+a{  
+    text-decoration: underline;
 	letter-spacing: normal;
-	cursor: var(--cursor_b), pointer;
+    color: var(--eblue);
+    cursor: var(--cursor_b), pointer;
 }
 
 table{
@@ -194,14 +226,14 @@ td, th{
 }
 
 
-/*FOOT -----------------------------------------------------------------------------*/
+/*FOOTER---------------------------------------------------------------------------*/
 .pc_footer{
 	z-index:5;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 10px;
+    height: 0px;
     background-color: var(--darkgray);
     display: inline-block;
 }
@@ -213,19 +245,33 @@ td, th{
   height: 0;
   border-style: solid;
   border-width: 0 20px 20px 0;
-  border-color: transparent  transparent var(--darkgray) transparent;
-  left: 50px;
-  bottom: 10px;
+  border-color: transparent  transparent var(--lightgray) transparent;
+  left: 40px;
+  bottom: 0px;
 }
 
 .pc_footer::after {
   position: absolute;
   content: '';
-  width: 50px;
+  width: 40px;
   height: 20px;
   border-style: solid;
   left: 0;
-  bottom: 10px;
+  bottom: 0px;
+}
+
+.footer_blinker{
+    z-index: 20;
+    position: absolute;
+    left: 14px;
+    bottom: 7px;
+    width: 16px;
+    height: 4px;
+    background-color: var(--darkgray);
+    
+}
+.footer_blinker_animation{
+    animation: blinklight 200ms linear;
 }
 
 /*NAVBAR ------------------------------------------------------------------------------*/
@@ -337,6 +383,7 @@ td, th{
 }
 @media only screen and (min-width: 870px) {
     .pc_last_nav_button{
+        border-bottom: 0px solid var(--emagenta);
         border-right: 1px solid var(--emagenta);
     }
 }
@@ -386,7 +433,7 @@ td, th{
 .pc_entrance_navbar .pc_navbar_right form input{
     border: none;
     outline: var(--eblue) solid 1px;
-    margin-top: 10px;
+    margin-top: 12px;
     width:75px; 
 }
 @media only screen and (min-width: 610px) {
@@ -416,6 +463,9 @@ td, th{
 	transition: 200ms;
 }
 
+
+
+
 /*INTRO MAP ---------------------------------------------------------------------------*/
 .pc_intro_div{
 	z-index:1;
@@ -423,7 +473,9 @@ td, th{
     width:100%;
     
     margin-top: 50px;
-	
+    margin-bottom: 50px;
+    
+    min-height:82vh;
 }
 
 
@@ -690,7 +742,7 @@ td, th{
     justify-content:space-between;
     align-items:flex-start;
     width: 520px;
-    height: 180px;
+    height: 200px;
     margin-left: auto;
     margin-right: auto;
 	overflow: hidden;
@@ -790,3 +842,4 @@ td, th{
     font-weight: 800;
     letter-spacing: 0.1em;
 }
+

@@ -1,5 +1,4 @@
-<div class="pc_footer"></div>
-
+<?php include 'footer.php'; ?>
 
 <script src="assets/scripts/main.js" type="text/javascript"></script>
 <script type="text/javascript">

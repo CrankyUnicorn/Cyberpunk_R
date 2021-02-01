@@ -2,90 +2,101 @@
 
 <?php
 
+	$pc_stats	= array('intel', 'ref', 'dex', 'tech', 'cool', 'will', 'luck', 'luck_max', 'move', 'body', 'emp', 'emp_max', 'humanity', 'humanity_max');
+
 	$keywordOne = "pc";
-	$keywordTwo = "pc";
+	$keywordTwo = "stats";
 
 	$tableName = $keywordOne."_".$keywordTwo;
 	$columnOneName = $keywordOne."_id";
 	$columnTwoName = $keywordTwo."_id";
 
 	$tableOneName = $keywordOne;
-	$columnTableOneName = "email"; 
+	$columnTableOneName = "id"; 
 
 	$tableTwoName = $keywordTwo;
 	$columnTableTwoName = "";
 	
 
 	$sql = "SELECT * FROM $tableTwoName WHERE id IN
-	(SELECT $columnTwoName FROM $tableName WHERE $columnOneName IN 
-	(SELECT id FROM $tableOneName WHERE $columnTableOneName = '".$_SESSION["u_pc"]."'))";
+	(SELECT $columnTwoName FROM $tableName WHERE $columnOneName = '".$_SESSION['u_pc']."')";
 
 	$stmt = mysqli_query( $connection, $sql);
 
+	$pc_stat_rel = mysqli_fetch_assoc($stmt);
+
+	if (!$pc_stat_rel) {
+
+		$names = join(",",$pc_stats);   
+
+		$sql = "INSERT INTO stats ($names) VALUES ('10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10')";
+
+		$stmt = mysqli_query( $connection, $sql);
+		
+		if (!$stmt) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+
+		$last_id = mysqli_insert_id($connection);
+
+		$sql = "INSERT INTO $tableName (pc_id, stats_id) VALUES ('".$_SESSION['u_pc']."', '".$last_id."')";
+
+		$stmt = mysqli_query( $connection, $sql);
+		
+		if (!$stmt) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+	}
+	
+	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT stats_id FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."')";
+
+	$stmt = mysqli_query( $connection, $sql);
+
+	$pc_stat = mysqli_fetch_assoc($stmt);
+		
+	if (!$stmt) {
+		trigger_error(mysqli_error($connection));
+		exit();
+	}
+
 ?>
 	
+	<form action="" method="$_POST" id="status_form">
 	<div class="pc_stats_panel">
-		<form action="update_pc_status.php" method="$_POST" id="status_form	">
 
-		<div class="pc_stats_block">
-			<div class="pc_stats_block_header">DEX</div>
-			<div style="margin-top: 4px;">
-				<div style="height:16px; width:auto; display:none;">
-					<label class="pc_stats_block_label">|</label><input class="pc_stats_block_value_max" id="dex_max_value" name="dex_max_value" value=
-					<?php ?>>
-				</div>
-				<div style="height:auto; width:auto; ">
-					<input class="pc_stats_block_value" id="dex_value" name="dex_value" value=
-					<?php ?>>
-				</div>
-			</div>
-			
-			<div onclick="up_value('dex')" class='pc_stats_corner_up'></div>
-			<div onclick="down_value('dex')" class='pc_stats_corner_down'></div>
-		</div>
-
-		</form>
+		<?php 
+			$arrey_lenght = count($pc_stats);
+			for( $i=0; $i< $arrey_lenght; $i++ ){ 
+				$display = 'display:none;';
+				$max_value = 20;
+				if($pc_stats[$i]!='luck_max' && $pc_stats[$i]!='emp_max' && $pc_stats[$i]!='humanity' && $pc_stats[$i]!='humanity_max'){
+					if($pc_stats[$i]=='luck' || $pc_stats[$i]=='emp' || $pc_stats[$i]=='humanity' ){
+						$display = 'display:block;';
+						$max_value = $pc_stat[$pc_stats[$i+1]];
+					}
+					echo "
+					<div class='pc_stats_block'>
+					<div class='pc_stats_block_header'>".$pc_stats[$i]."</div>
+					<div style='margin-top: 4px;'>
+					<div style='height:16px; width:auto; ".$display."'>
+					<label class='pc_stats_block_label'>|</label><input oninput='oninput_value(`".$pc_stats[$i+1]."`)' onblur='onblur_value(`".$pc_stats[$i+1]."`)' class='pc_stats_block_value_max' id='".$pc_stats[$i]."_max_value' name='".$pc_stats[$i+1]."_max_value' value='".$max_value."'>
+					</div>
+					<div style='height:auto; width:auto;'>
+					<input oninput='oninput_value(`".$pc_stats[$i]."`)' onblur='onblur_value(`".$pc_stats[$i]."`)' class='pc_stats_block_value' id='".$pc_stats[$i]."_value' name='".$pc_stats[$i]."_value' value='".$pc_stat[$pc_stats[$i]]."'>
+					</div>
+					</div>
+				
+					<div onclick='up_value(`".$pc_stats[$i]."`)' class='pc_stats_corner_up'></div>
+					<div onclick='down_value(`".$pc_stats[$i]."`)' class='pc_stats_corner_down'></div>
+					</div>
+					";}
+			}
+		?>
+		
 	</div>
+</form>
 	
 <?php
-	/*if($stmt != false){
-		
-		while($row = mysqli_fetch_assoc($stmt)){
-			if ($row['active'] == 0) {
-				continue;
-			}
-
-			if($rowColorState===0){
-				$rowColor = "pc_selectbox_oddColor";
-				$rowColorState = 1;
-			}else{
-				$rowColor = "pc_selectbox_evenColor";
-				$rowColorState = 0;
-			}
-			
-			echo "<option class='".$rowColor." pc_selectbox_item' value='".$row['id']."'>".$row['name']."";
-			
-			if($row['description']){
-				echo "- ".$row['description']."";
-
-			}
-
-			echo "</option>"; 
-			
-		}
-	}	
-	echo "</select>";
-	
-	mysqli_data_seek($stmt,0);
-	if($stmt != false){
-		echo "<form method='post' action='update_pc.php' id='pc_select' class='pc_form_register'>";
-		
-		echo "<input type='submit' value='Use' name='use' style='font-size:16px; font-weight:normal; float: right; padding:5px 10px 5px 10px;'>";
-		echo "<input type='submit' value='Delete' name='delete' style='font-size:16px; font-weight:normal; float: right; margin-right:10px; padding:5px 10px 5px 10px;'>";
-
-		echo "</form>";
-	}		
-
-	echo "</div>";
-	*/
 ?>

@@ -20,8 +20,8 @@
       }else{
 							
 				echo
-        "<input type='email' name='userEmail' id='pc_email'>
-        <input type='password' name='userPassword' id='pc_password'>
+        "<input type='email' name='userEmail' id='pc_email' placeholder=' e-mail'>
+        <input type='password' name='userPassword' id='pc_password' placeholder='password'>
         <input type='submit' value='Login' name='login' class='pc_submit_button' style='margin-top: 0px; width:auto;'>";
 			}
 			?>
