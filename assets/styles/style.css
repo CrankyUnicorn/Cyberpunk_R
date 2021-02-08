@@ -742,7 +742,7 @@ td, th{
     justify-content:space-between;
     align-items:flex-start;
     width: 520px;
-    height: 200px;
+    height: 300px;
     margin-left: auto;
     margin-right: auto;
 	overflow: hidden;
@@ -824,7 +824,7 @@ td, th{
 }
 .pc_stats_block_value_max{
     min-width: 15px;
-    max-width: 30px;
+    max-width: 45px;
     margin:0px;
     padding: 0px;
     padding-left: 2px;
@@ -834,7 +834,7 @@ td, th{
 }
 .pc_stats_block_value{
     display: block;
-    width: 50px;
+    width: 65px;
     margin:0px;
     padding: 0px;
     color: var(--emagenta);
