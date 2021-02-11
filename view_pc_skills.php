@@ -5,7 +5,7 @@
 	$pc_stats	= array('intel', 'ref', 'dex', 'tech', 'cool', 'will', 'luck', 'luck_max', 'move', 'body', 'emp', 'emp_max', 'humanity', 'humanity_max','hp','hp_max','death_save');
 
 	$keywordOne = "pc";
-	$keywordTwo = "stats";
+	$keywordTwo = "skill";
 
 	$tableName = $keywordOne."_".$keywordTwo;
 	$columnOneName = $keywordOne."_id";
@@ -17,20 +17,20 @@
 	$tableTwoName = $keywordTwo;
 	$columnTableTwoName = "";
 	
-	//check if player character haves stats
+	//check if player character haves skills
 	$sql = "SELECT * FROM $tableTwoName WHERE id IN
 	(SELECT $columnTwoName FROM $tableName WHERE $columnOneName = '".$_SESSION['u_pc']."')";
 
 	$stmt = mysqli_query( $connection, $sql);
 
-	$pc_stat_rel = mysqli_fetch_assoc($stmt);
+	$pc_skill_count = mysqli_num_rows($stmt);
+	$pc_skill_rel = mysqli_fetch_assoc($stmt);
 
-	if (!$pc_stat_rel) { //if player character doesn't have stats create them
+	if ($pc_skill_count<=0) { //if player character doesn't have skills associate/create them
 
 		$names = join(",",$pc_stats);   
 
-		$sql = "INSERT INTO stats ($names) VALUES ('6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '6', '60', '60','40','40','6')";
-		
+		$sql = "INSERT INTO stats ($names) VALUES ('10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10','10','10','10')";
 
 		$stmt = mysqli_query( $connection, $sql);
 		
@@ -52,53 +52,22 @@
 		}
 	}
 	
-	
 	//get stats of the current player character
-	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT $columnTwoName FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."')";
+	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT stats_id FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."')";
 
 	$stmt = mysqli_query( $connection, $sql);
-	
-	if (!$stmt) {
-		trigger_error(mysqli_error($connection));
-		exit();
-	}
-	
+
 	$pc_stat_value = mysqli_fetch_assoc($stmt);
-	
-	
-	//calculate humanity and 
-	$calculated_humanity = 10 * $pc_stat_value[$pc_stats[10]];
-	$calculated_hp = 10 + ( 5 * ceil( ( $pc_stat_value[$pc_stats[5]] + $pc_stat_value[$pc_stats[8]] )/2 ));
-
-	//update newly calculated values
-	$sql = "UPDATE $tableTwoName SET $pc_stats[13] = $calculated_humanity , $pc_stats[15] = $calculated_hp WHERE id IN ( SELECT $columnTwoName FROM $tableName WHERE $columnOneName = '".$_SESSION['u_pc']."')";
-	
-	$stmt = mysqli_query( $connection, $sql);
-	
+		
 	if (!$stmt) {
 		trigger_error(mysqli_error($connection));
 		exit();
 	}
 
-
-	//get again stats of the current player character
-	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT $columnTwoName FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."')";
-
-	$stmt = mysqli_query( $connection, $sql);
-	
-	if (!$stmt) {
-		trigger_error(mysqli_error($connection));
-		exit();
-	}
-	
-	$pc_stat_value = mysqli_fetch_assoc($stmt);
-	
 ?>
-
-
+	
 	<form action="" method="$_POST" id="status_form">
 	<div class="pc_stats_panel">
-
 
 		<?php 
 			//go over all the stats and print the ones that may be printable
@@ -124,8 +93,6 @@
 					$style='';
 					if ($pc_stats[$i]=='humanity' || $pc_stats[$i]=='hp') {
 						$style='width: 175px';
-						
-					
 					}
 
 					echo "

@@ -42,9 +42,15 @@
       echo "<h3 style='text-align: center;'>".$stmtres['name']."</h3>";
     ?>
 
-    <p class="pc_forms_text">Stats</p>
-    
+    <h4 class="pc_forms_text">Stats</h4>
     <?php include "view_pc_stats.php"; ?>
+
+    <h4 class="pc_forms_text">Skills</h4>
+    <?php include "view_pc_skills.php"; ?>
+
+    <h4 class="pc_forms_text">Weapons and Armor</h4>
+    <?php //include "view_pc_weapons.php"; ?>
+    <?php //include "view_pc_armor.php"; ?>
 
  </div>
 </div>

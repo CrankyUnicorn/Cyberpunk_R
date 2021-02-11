@@ -121,14 +121,14 @@ const oninput_max_value = (stat_name) => {
 };
 
 const onblur_value = (stat_name) => {
-/*
+
    let status = stat_name;
    let sufix = "_value";
    let max_sufix = "_max_value";
 
    let stat_max_value = parseInt(document.getElementById(status.concat(max_sufix)).value);
    let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
-   */
+   
    submit_stats(stat_name);
 };
 
