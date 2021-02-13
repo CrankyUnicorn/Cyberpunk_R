@@ -1,3 +1,4 @@
+//STATS----------------------------------------------------------------------------------------
 const submit_stats = (stats_name) =>{
    
    const stat_name = ''.concat(stats_name , '_value'); 
@@ -42,50 +43,50 @@ const submit_stats = (stats_name) =>{
 
 
 const up_value = (stat_name) => {
-   let status = stat_name;
+   let stats = stat_name;
    let sufix = "_value";
    let max_sufix = "_max_value";
 
-   let stat_max_value = parseInt(document.getElementById(status.concat(max_sufix)).value);
-   let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+   let stat_max_value = parseInt(document.getElementById(stats.concat(max_sufix)).value);
+   let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
    
    if( stat_value < stat_max_value ){
       stat_value += 1;
    }
    
-   document.getElementById(status.concat(sufix)).value = stat_value.toString();
+   document.getElementById(stats.concat(sufix)).value = stat_value.toString();
 
    submit_stats(stat_name);
 };
 
 
 const down_value = (stat_name) => {
-   let status = stat_name;
+   let stats = stat_name;
    let sufix = "_value";
    
-   let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+   let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
    
    if( stat_value > 0 ){
       stat_value -= 1;
    }
    
-   document.getElementById(status.concat(sufix)).value = stat_value.toString();
+   document.getElementById(stats.concat(sufix)).value = stat_value.toString();
 
    submit_stats(stat_name);
 };
 
 const oninput_value = (stat_name) => {
   
-   let status = stat_name;
+   let stats = stat_name;
    let sufix = "_value";
    let max_sufix = "_max_value";
 
-   let stat_max_value = parseInt(document.getElementById(status.concat(max_sufix)).value);
-   let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+   let stat_max_value = parseInt(document.getElementById(stats.concat(max_sufix)).value);
+   let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
    
    if (!stat_value || stat_value==null ) {
       
-      document.getElementById(status.concat(sufix)).value = '';
+      document.getElementById(stats.concat(sufix)).value = '';
       return;
    }else{
 
@@ -96,19 +97,19 @@ const oninput_value = (stat_name) => {
       }
    }
       
-   document.getElementById(status.concat(sufix)).value = stat_value.toString();
+   document.getElementById(stats.concat(sufix)).value = stat_value.toString();
 };
 
 const oninput_max_value = (stat_name) => {
   
-   let status = stat_name;
+   let stats = stat_name;
    let sufix = "_value";
 
-   let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+   let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
    
    if (!stat_value || stat_value==null ) {
       
-      document.getElementById(status.concat(sufix)).value = '';
+      document.getElementById(stats.concat(sufix)).value = '';
       return;
    }else{
       
@@ -117,29 +118,67 @@ const oninput_max_value = (stat_name) => {
       }
    }
       
-   document.getElementById(status.concat(sufix)).value = stat_value.toString();
+   document.getElementById(stats.concat(sufix)).value = stat_value.toString();
 };
 
 const onblur_value = (stat_name) => {
 
-   let status = stat_name;
+   let stats = stat_name;
    let sufix = "_value";
    let max_sufix = "_max_value";
 
-   let stat_max_value = parseInt(document.getElementById(status.concat(max_sufix)).value);
-   let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+   let stat_max_value = parseInt(document.getElementById(stats.concat(max_sufix)).value);
+   let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
    
    submit_stats(stat_name);
 };
 
 const onblur_max_value = (stat_name) => {
    /*
-      let status = stat_name;
+      let stats = stat_name;
       let sufix = "_value";
       let max_sufix = "_max_value";
    
-      let stat_max_value = parseInt(document.getElementById(status.concat(max_sufix)).value);
-      let stat_value = parseInt(document.getElementById(status.concat(sufix)).value);
+      let stat_max_value = parseInt(document.getElementById(stats.concat(max_sufix)).value);
+      let stat_value = parseInt(document.getElementById(stats.concat(sufix)).value);
       */
       submit_stats(stat_name);
 };
+
+//SKILLS----------------------------------------------------------------
+
+const insert = (table,column,name,value) =>{
+   
+   
+   // get the URL
+   const http = new XMLHttpRequest();
+   const url = 'update_pc_sheet.php';
+   const params = ''.concat('table=',table,'&','name','=',name,'&','column','=',column,'&','value','=',value);
+   console.log(params)
+   http.open('POST', url, true);
+
+   //Send the proper header information along with the request
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+   http.onreadystatechange = function() {//Call a function when the state changes.
+    if(http.readyState == 4 && http.status == 200) {
+      //alert(http.responseText);
+      const element = document.getElementById('footer_blinker');
+      element.classList.remove("footer_blinker_animation");
+      void element.offsetWidth;
+      element.classList.add("footer_blinker_animation");
+    }
+   }
+
+   http.send(params);
+   
+   // prevent form from submitting
+   return false;
+};
+
+const getElementValue = (element_id) =>{
+   const element = document.getElementById(element_id);
+   return  element.value;
+}
+
+   

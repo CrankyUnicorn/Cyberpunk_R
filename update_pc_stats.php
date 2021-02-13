@@ -6,7 +6,6 @@ $filePath = "page_pc_stats.php";
 $fileName = "stats";
 $tableName = $fileName; 
 
-
 if(isset($_POST)){
 
 		include_once 'connection.php';

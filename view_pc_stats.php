@@ -96,7 +96,7 @@
 ?>
 
 
-	<form action="" method="$_POST" id="status_form">
+	<form action="" method="post" id="stats_form">
 	<div class="pc_stats_panel">
 
 

@@ -2,8 +2,6 @@
 
 <?php
 
-	$pc_stats	= array('intel', 'ref', 'dex', 'tech', 'cool', 'will', 'luck', 'luck_max', 'move', 'body', 'emp', 'emp_max', 'humanity', 'humanity_max','hp','hp_max','death_save');
-
 	$keywordOne = "pc";
 	$keywordTwo = "skill";
 
@@ -17,107 +15,98 @@
 	$tableTwoName = $keywordTwo;
 	$columnTableTwoName = "";
 	
-	//check if player character haves skills
-	$sql = "SELECT * FROM $tableTwoName WHERE id IN
-	(SELECT $columnTwoName FROM $tableName WHERE $columnOneName = '".$_SESSION['u_pc']."')";
+	//get skills of the current player character
+	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT $columnTwoName FROM $tableName WHERE $columnOneName = '".$_SESSION['u_pc']."')";
 
-	$stmt = mysqli_query( $connection, $sql);
-
-	$pc_skill_count = mysqli_num_rows($stmt);
-	$pc_skill_rel = mysqli_fetch_assoc($stmt);
-
-	if ($pc_skill_count<=0) { //if player character doesn't have skills associate/create them
-
-		$names = join(",",$pc_stats);   
-
-		$sql = "INSERT INTO stats ($names) VALUES ('10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10', '10','10','10','10')";
-
-		$stmt = mysqli_query( $connection, $sql);
-		
-		if (!$stmt) {
-			trigger_error(mysqli_error($connection));
-			exit();
-		}
-
-		//coorelate stats to pc by relational table pc_stats
-		$last_id = mysqli_insert_id($connection);
-
-		$sql = "INSERT INTO $tableName (pc_id, stats_id) VALUES ('".$_SESSION['u_pc']."', '".$last_id."')";
-
-		$stmt = mysqli_query( $connection, $sql);
-		
-		if (!$stmt) {
-			trigger_error(mysqli_error($connection));
-			exit();
-		}
-	}
+	$own_skills = mysqli_query( $connection, $sql);
 	
-	//get stats of the current player character
-	$sql = "SELECT * FROM $tableTwoName WHERE id IN (SELECT stats_id FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."')";
-
-	$stmt = mysqli_query( $connection, $sql);
-
-	$pc_stat_value = mysqli_fetch_assoc($stmt);
-		
-	if (!$stmt) {
+	if (!$own_skills) {
 		trigger_error(mysqli_error($connection));
 		exit();
 	}
 
 ?>
 	
-	<form action="" method="$_POST" id="status_form">
+	<form action="update_pc_sheet.php" method="post" id="skills_form">
 	<div class="pc_stats_panel">
 
 		<?php 
 			//go over all the stats and print the ones that may be printable
-			$arrey_lenght = count($pc_stats);
-			for( $i=0; $i< $arrey_lenght; $i++ ){ 
+			while( $skill = mysqli_fetch_assoc($own_skills) ){
 				
-				$display = 'display:none;';
-				$max_value = 20;
-				
-				if($pc_stats[$i]!='luck_max' && $pc_stats[$i]!='emp_max' && $pc_stats[$i]!='humanity_max'&& $pc_stats[$i]!='hp_max'){
-				
-					if($pc_stats[$i]=='luck' || $pc_stats[$i]=='emp' || $pc_stats[$i]=='humanity' || $pc_stats[$i]=='hp' ){
-				
-						$display = 'display:block;';
-						$max_stat_value = $pc_stat_value[$pc_stats[$i+1]];
-						$max_stat_name = $pc_stats[$i+1];
-					}else{
-						$max_stat_value = 20; //max value of a normal stat 
-						$max_stat_name = $pc_stats[$i]."_max";
-					}
+				//get skills level of the current player character
+				$sql = "SELECT * FROM $tableName WHERE pc_id = '".$_SESSION['u_pc']."'";
 
-					//changes the lenght of the stats block humanity and hp
-					$style='';
-					if ($pc_stats[$i]=='humanity' || $pc_stats[$i]=='hp') {
-						$style='width: 175px';
-					}
+				$stmt = mysqli_query( $connection, $sql);
+				$skill_level = mysqli_fetch_assoc($stmt);
+				
+				if (!$stmt) {
+					trigger_error(mysqli_error($connection));
+					exit();
+				}
 
 					echo "
-					<div class='pc_stats_block' style='".$style."'>
-						<div class='pc_stats_block_header'>".$pc_stats[$i]."</div>
+					<div class='pc_stats_block pc_stats_block_long'>
+						<div class='pc_stats_block_header'>".$skill['category']." - ".$skill['name']." (x".$skill['cost'].")</div>
 					
-						<div style='margin-top: 4px;'>
-
-							<div style='height:16px; width:auto; ".$display."'>
-							<label class='pc_stats_block_label'>|</label><input oninput='oninput_max_value(`".$max_stat_name."`)' onblur='onblur_max_value(`".$max_stat_name."`)' class='pc_stats_block_value_max' id='".$max_stat_name."_value' name='".$max_stat_name."_value' value='".$max_stat_value."'>
-							</div>
-
-							<div style='height:auto; width:auto;'>
-						<input oninput='oninput_value(`".$pc_stats[$i]."`)' onblur='onblur_value(`".$pc_stats[$i]."`)' class='pc_stats_block_value' id='".$pc_stats[$i]."_value' name='".$pc_stats[$i]."_value' value='".$pc_stat_value[$pc_stats[$i]]."'>
+						<div style='margin-top: 6px; height:auto; width:auto;'>
+							<table style='width:100%'>
+								<tr>
+									<td><label>Level: </label><input class='pc_stats_block_level' id='".$skill['name']."_level' name='".$skill['name']."_level' value='".$skill_level['level']."'></td>
+									<td><label>Stat: </label><input class='pc_stats_block_level' id='".$skill['name']."_stat' name='".$skill['name']."_stat' value='".$pc_stat_value[strtolower($skill['type'])]."'></td>
+									<td><label>Base: </label><input class='pc_stats_block_level' id='".$skill['name']."_base' name='".$skill['name']."_base' value='".(intval($skill_level['level']) + intval($pc_stat_value[strtolower($skill['type'])]))."'></td>
+								
+									</tr>
+							</table>
+					
 						</div>
-					
-					</div>
 				
-					<div onclick='up_value(`".$pc_stats[$i]."`)' class='pc_stats_corner_up'></div>
+						<div onclick='up_value(`".$skill['name']."`)' class='pc_stats_corner_up'></div>
 					
-					<div onclick='down_value(`".$pc_stats[$i]."`)' class='pc_stats_corner_down'></div>
+						<div onclick='down_value(`".$skill['name']."`)' class='pc_stats_corner_down'></div>
 				
 				</div>
-				";}
+				";
+				
 			}
+
+				//get skills of the current player character
+				$sql = "SELECT * FROM $tableTwoName";
+
+				$all_skills = mysqli_query( $connection, $sql);
+
+				if (!$all_skills) {
+					trigger_error(mysqli_error($connection));
+					exit();
+				}
+				
+				//select skills
+				echo "
+				
+				<div style='margin:10px; width:100%;'>
+				<select style='padding:5px; width:75%; height:30px;' margin:0px; name='skills' id='select_skills'>
+				";
+
+				while($select_skill = mysqli_fetch_assoc($all_skills)){
+					echo "
+					<option value='".$select_skill['name']."'>".$select_skill['name']."</option>
+					";
+				}
+
+				echo "
+				</select>
+				
+				<input type='button' onclick='insert(`skill`,`level`,getElementValue(`select_skills`),`1`)' style='padding:5px; width:23%; float:right; height:30px; margin:0px'  value='Add'>
+				";
+				
+				/*
+				<input name='table' value='skill'>
+				<input name='name' value='Concentration'>
+				<input name='column' value='level'>
+				<input name='value' value='1'>
+				<input type='submit' name='send' value='GO'>
+				*/			
+			
 		?>
 		
 	</div>
