@@ -29,6 +29,8 @@
 	
 	<form action="update_pc_sheet.php" method="post" id="skills_form">
 	<div class="pc_stats_panel">
+		<div id="skills_panel" style="width:100%; margin:10px;">
+			<!--skillstart-->
 
 		<?php 
 			//go over all the stats and print the ones that may be printable
@@ -50,7 +52,7 @@
 						<div class='pc_stats_block_header'>".$skill['category']." - ".$skill['name']." (x".$skill['cost'].")</div>
 					
 						<div style='margin-top: 6px; height:auto; width:auto;'>
-							<table style='width:100%'>
+							<table style='width:100%;'>
 								<tr>
 									<td><label>Level: </label><input class='pc_stats_block_level' id='".$skill['name']."_level' name='".$skill['name']."_level' value='".$skill_level['level']."'></td>
 									<td><label>Stat: </label><input class='pc_stats_block_level' id='".$skill['name']."_stat' name='".$skill['name']."_stat' value='".$pc_stat_value[strtolower($skill['type'])]."'></td>
@@ -64,12 +66,17 @@
 						<div onclick='up_value(`".$skill['name']."`)' class='pc_stats_corner_up'></div>
 					
 						<div onclick='down_value(`".$skill['name']."`)' class='pc_stats_corner_down'></div>
-				
+						
+						</div>
+						";
+						
+					}
+					
+				echo "
 				</div>
+				<!--skillend-->
 				";
 				
-			}
-
 				//get skills of the current player character
 				$sql = "SELECT * FROM $tableTwoName";
 
@@ -84,7 +91,7 @@
 				echo "
 				
 				<div style='margin:10px; width:100%;'>
-				<select style='padding:5px; width:75%; height:30px;' margin:0px; name='skills' id='select_skills'>
+				<select style='padding:5px; width:52%; height:30px;' margin:0px; name='skills' id='select_skills'>
 				";
 
 				while($select_skill = mysqli_fetch_assoc($all_skills)){
@@ -92,23 +99,18 @@
 					<option value='".$select_skill['name']."'>".$select_skill['name']."</option>
 					";
 				}
-
+				
 				echo "
 				</select>
 				
-				<input type='button' onclick='insert(`skill`,`level`,getElementValue(`select_skills`),`1`)' style='padding:5px; width:23%; float:right; height:30px; margin:0px'  value='Add'>
+				<input type='button' onclick='drop(`skill`,`level`,getElementValue(`select_skills`),`1`); removeAllChildren();' style='padding:5px; width:23%; float:right; height:30px; margin:0;' value='Delete'>
+				
+				<input type='button' onclick='insert(`skill`,`level`,getElementValue(`select_skills`),`1`); removeAllChildren();' style='padding:5px; width:23%; float:right; height:30px; margin:margin:0px 10px 0px 0px;' value='Add'>
 				";
 				
-				/*
-				<input name='table' value='skill'>
-				<input name='name' value='Concentration'>
-				<input name='column' value='level'>
-				<input name='value' value='1'>
-				<input type='submit' name='send' value='GO'>
-				*/			
+				
 			
 		?>
-		
 	</div>
 </form>
 	

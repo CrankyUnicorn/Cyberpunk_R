@@ -36,17 +36,17 @@ $columnTwoNameTwo = "pc_id";
 				exit();
 				}else{
 					
-						//check for already existing matches with same name
-						$sql = "SELECT * FROM $tableName WHERE $columnOneName = '$characterName' AND $columnTwoName='1'";
-						$stmt = mysqli_query( $connection, $sql);
-						$stmtlen = mysqli_num_rows($stmt);
-							
-						if($stmtlen!=0){
-							
-							header("Location: ".$filePath."?".$fileName."=character_taken");
-							exit();
-						}else{
-
+					//check for already existing matches with same name
+					$sql = "SELECT * FROM $tableName WHERE $columnOneName = '$characterName' AND $columnTwoName='1'";
+					$stmt = mysqli_query( $connection, $sql);
+					$stmtlen = mysqli_num_rows($stmt);
+					
+					if($stmtlen!=0){
+						
+						header("Location: ".$filePath."?".$fileName."=character_taken");
+						exit();
+					}else{
+						
 							//creates a character
 							$sql = "INSERT INTO $tableName ($columnOneName, $columnTwoName) VALUES ('$characterName' , 1 )";
 							
@@ -77,12 +77,17 @@ $columnTwoNameTwo = "pc_id";
 								trigger_error(mysqli_error($connection));
 								exit();
 							}
+
+							$_SESSION['u_pc'] = $characterId['id'];
 							
 						}
 
+						include_once 'pc_sheet_operations.php';
+						
+						initialize($connection);
+						
 						header("Location: ".$filePathTarget."?".$fileName." = pc_success");
 						exit();	
-					
 				}
 			}
 		}

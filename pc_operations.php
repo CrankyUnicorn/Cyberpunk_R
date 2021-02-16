@@ -3,7 +3,7 @@
 session_start();
 
 $filePath = "page_pc.php";
-$filePathTarget = "page_edit_pc.php"; 
+$filePathTarget = "page_pc_sheet.php"; 
 $fileName = "pc";
 $tableName = $fileName; 
 $columnOneName = "id";
