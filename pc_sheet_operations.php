@@ -51,6 +51,101 @@
 		
 		
 	}else if (isset($_POST['view'])) { //USE TO VIEW RELATIONAL TABLES
+	
+		$pc = $_SESSION['u_pc'];
+
+
+		//query for character name
+		$sql = "SELECT pc.name 
+		FROM pc 
+		WHERE id = $pc";
+
+		$stmt_pc_name = mysqli_query( $connection, $sql);
+
+		if (!$stmt_pc_name) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+
+
+		//query for character stats
+		$sql = "SELECT stats.name, pc_stats.value, pc_stats.max_value, stats.show_max
+		FROM pc_stats
+		LEFT JOIN stats ON pc_stats.stats_id = stats.id 
+		WHERE pc_stats.pc_id = $pc";
+
+		$stmt_stats = mysqli_query( $connection, $sql);
+		
+		if (!$stmt_stats) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+
+
+		//query for character skills
+		$sql = "SELECT * 
+		FROM 
+		(SELECT pc_skill.value, skill.name, skill.category, skill.cost, skill.type 
+		FROM pc_skill 
+		LEFT JOIN skill 
+		ON pc_skill.skill_id = skill.id 
+		WHERE pc_skill.pc_id = $pc) t1 
+		LEFT JOIN 
+		(SELECT pc_stats.value AS stat_value, stats.name AS stat_name
+		FROM pc_stats 
+		LEFT JOIN stats 
+		ON pc_stats.stats_id = stats.id 
+		WHERE pc_stats.pc_id = $pc) t2 
+		ON ( t1.type = t2.stat_name )";
+
+		$stmt_skills = mysqli_query( $connection, $sql);
+		
+		if (!$stmt_skills) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+	
+
+		$sql = "SELECT name FROM skill";
+
+		$stmt_all_skills = mysqli_query( $connection, $sql);
+		
+		if (!$stmt_all_skills) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+	
+
+		//echo json_encode($stmt);
+		$rows = array();
+		
+		//STATS
+		while ($result = mysqli_fetch_assoc($stmt_pc_name)) {
+			$result['topic'] = 'character_name';
+			$rows[] = $result;
+		}
+
+		while ($result = mysqli_fetch_assoc($stmt_stats)) {
+			$result['topic'] = 'stats';
+			$rows[] = $result;
+		}	
+		
+		while ($result = mysqli_fetch_assoc($stmt_skills)) {
+			$result['topic'] = 'skills';
+			$rows[] = $result;
+		}
+
+		while ($result = mysqli_fetch_assoc($stmt_all_skills)) {
+			$result['topic'] = 'all_skills';
+			$rows[] = $result;
+		}
+		
+		
+		echo json_encode($rows);
+		
+		exit();
+
+	}else if (isset($_POST['select'])) { //USE TO VIEW RELATIONAL TABLES
 		
 		$keywordOne = "pc"; //player character
 		$keywordTwo = ms_escape_string($_POST["table"]);
@@ -60,7 +155,6 @@
 			trigger_error("Error invalid character!");
 			exit();
 		}
-
 
 		$tableRelation = $keywordOne."_".$keywordTwo;
 		$firstId = $keywordOne."_id";
@@ -72,34 +166,15 @@
 		$tableTwo = $keywordTwo;
 		$tableTwoId = "";
 
-
-		//query for character stats
-		$sql = "SELECT n.name, $tableRelation.value, $tableRelation.max_value 
-		FROM $tableRelation
-		LEFT JOIN $tableTwo n ON $tableRelation.$secondId = n.id 
-		WHERE $tableRelation.$firstId = $tableOneId";
-
-		$sql = "SELECT $tableTwo.name, $tableRelation.value, $tableRelation.max_value 
+		//query for table
+		$sql = "SELECT $tableTwo.name, $tableRelation.value, $tableRelation.max_value
 		FROM $tableRelation
 		LEFT JOIN $tableTwo ON $tableRelation.$secondId = $tableTwo.id 
 		WHERE $tableRelation.$firstId = $tableOneId";
 
-		$stmt_stats = mysqli_query( $connection, $sql);
+		$stmt = mysqli_query( $connection, $sql);
 		
-		if (!$stmt_stats) {
-			trigger_error(mysqli_error($connection));
-			exit();
-		}
-
-		
-		//query for character stats
-		$sql = "SELECT $tableOne.name AS 'character_name' 
-						FROM $tableOne 
-						WHERE id = $tableOneId";
-
-		$stmt_pc_name = mysqli_query( $connection, $sql);
-
-		if (!$stmt_pc_name) {
+		if (!$stmt) {
 			trigger_error(mysqli_error($connection));
 			exit();
 		}
@@ -107,11 +182,8 @@
 		//echo json_encode($stmt);
 		$rows = array();
 		
-		while ($result = mysqli_fetch_assoc($stmt_stats)) {
-			$rows[] = $result;
-		}
-
-		while ($result = mysqli_fetch_assoc($stmt_pc_name)) {
+		//STATS
+		while ($result = mysqli_fetch_assoc($stmt)) {
 			$rows[] = $result;
 		}
 		
@@ -197,7 +269,7 @@
 		$firstId = $keywordOne."_id";
 		$secondId = $keywordTwo."_id";
 		$tableColumn = $keywordThree;
-		$tableValue = $keywordFive;
+		$tableValue = $keywordFive == null ? 0 : $keywordFive;
 	
 		$tableOne = $keywordOne;
 		$tableOneId = $_SESSION['u_pc']; 

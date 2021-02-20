@@ -780,8 +780,6 @@ td, th{
 }
 
 .pc_stats_block div{
-    margin: 0px;
-    padding: 0px;
     line-height: 100%;
 }
 
@@ -859,7 +857,7 @@ td, th{
 
 .pc_stats_block_level{
     display: inline-block;
-    width: 40px;
+    width: 65px;
     margin:0px;
     padding: 0px;
     color: var(--emagenta);
@@ -868,3 +866,42 @@ td, th{
     letter-spacing: 0.1em;
 }
 
+.pc_stat_block_tiny_button{
+    padding: 0 0 0 3px;
+    margin: 0;
+}
+.pc_stat_block_tiny_button:hover{
+    outline: var(--emagenta);
+    color:var(--palepink);
+    background-color: var(--emagenta);
+}
+
+.pc_stat_block_button{
+    padding: 5px;
+    width: 22%;
+    float: right;
+    height: 35px;
+    margin: 0;
+}
+.pc_stat_block_button:hover{
+    outline: var(--emagenta);
+    color:var(--palepink);
+    background-color: var(--emagenta);
+}
+
+.pc_skill_selectbox{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;  
+    padding: 5px;
+    margin: 0px;
+    width: 52%;
+    height: 35px;
+    border: 0px solid var(--emagenta);
+}
+
+.pc_skill_selectbox_option:hover {
+    background: var(--emagenta) !important;
+    color:var(--deepblue) !important;
+    box-shadow: 0 0 10px 100px var(--emagenta) inset;
+}
