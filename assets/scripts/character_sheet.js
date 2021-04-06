@@ -41,6 +41,32 @@ const json_counter = (status) =>{
    return count;
 }
 
+const show_message = (message_text, type) =>{
+   const html_body = document.getElementsByTagName('body');
+   
+   const old_message_panel = document.getElementById('message_panel');
+   
+   if ( old_message_panel != null ) {
+      old_message_panel.remove();
+   }
+   
+   const message_panel = document.createElement('div');
+   message_panel.id = 'message_panel';
+   if (type == 'error') {
+      
+      message_panel.className = 'pc_message_panel pc_message_panel_error'; 
+   }else{
+
+      message_panel.className = 'pc_message_panel'; 
+   }
+   message_panel.textContent =  message_text;
+   html_body[0].appendChild(message_panel);
+   
+   const close_icon = document.createElement('i');
+   //close_icon.className = 'pc_message_close_button fa fa-times pc_message_panel_exit_icon';
+   message_panel.appendChild(close_icon);
+
+}
 
 //ESTHETICS--------------------------------------------------------------------
 const blinker = () =>{
@@ -52,7 +78,7 @@ const blinker = () =>{
 }
 
 //INSERT-----------------------------------------------------------------------
-const insert_character_sheet_info = (table,name,column,value) =>{
+const insert_character_sheet_info = (table,name,column,value, callback) =>{
    
    // get the URL
    const http = new XMLHttpRequest();
@@ -70,6 +96,45 @@ const insert_character_sheet_info = (table,name,column,value) =>{
       if (http.responseText) {
          
          alert(http.responseText);
+      }
+
+      if (callback) {
+         callback();   
+      }
+
+      blinker();
+    }
+   }
+
+   http.send(params);
+   
+   // prevent form from submitting
+   return false;
+};
+
+//DELETE-----------------------------------------------------------------------
+const delete_character_sheet_info = (table,name,column,value, callback) =>{
+   
+   // get the URL
+   const http = new XMLHttpRequest();
+   const url = 'pc_sheet_operations.php';
+   const params = ''.concat('delete','&','table=',table,'&','name','=',name,'&','column','=',column,'&','value','=',value);
+   
+   http.open('POST', url, true);
+
+   //Send the proper header information along with the request
+   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+   http.onreadystatechange = function() {//Call a function when the state changes.
+    if(http.readyState == 4 && http.status == 200) {
+      
+      if (http.responseText) {
+         
+         alert(http.responseText);
+      }
+
+      if (callback) {
+         callback();   
       }
 
       blinker();
@@ -114,7 +179,7 @@ const update_character_sheet_info = (table,name,column,value) =>{
 };
 
 //SELECT-------------------------------------------------------------------------
-const select_character_sheet_info = (table_request) =>{
+const select_character_sheet_info = (table_request, callback) =>{
    //table_request defines the type of data requested from the Database
 
    // get the URL
@@ -135,14 +200,11 @@ const select_character_sheet_info = (table_request) =>{
    }
 
    http.onload = function() {
-      const str = JSON.parse(http.responseText);
-      //const strstart = str.search("<!--skillstart-->");
-      //const strend = str.search("<!--skillend-->")+15;
-      //const substr = str.substring(strstart,strend);
-      
-      console.log(str);
-
-      build_ui(str);
+      const json_array = JSON.parse(http.responseText);
+            
+      if (callback) {
+         callback(json_array);
+      }
    }
 
    http.send(params);
@@ -169,12 +231,12 @@ const request_character_sheet_info = ( callback ) =>{
     if(http.readyState == 4 && http.status == 200) {
           
       blinker();
-    }
    }
+}
 
    http.onload = () => {
       const json_array = JSON.parse(http.responseText);
-
+      
       if (callback) {
          callback(json_array);
       }
@@ -373,6 +435,7 @@ const roll_skill_value = (skill_name) => {
    const result = base_value + Math.floor( Math.random() * 11) ;
    
    //roll panel must be created to display this results
+   //a roll log also would be nice
    console.log("skill roll: ".concat(skill_name,":",result));
 }
 
@@ -437,24 +500,27 @@ const skill_add = (select_skill_element, status, skills_panel_div ) => {
    
    if (flag_is_skill == true && flag_skill_exists == false) {
       
-      insert_character_sheet_info("skill",selected_skill_name,"value",skill_value);
-      request_character_sheet_info();
+      insert_character_sheet_info("skill",selected_skill_name,"value",skill_value, () =>{
+      
+         request_character_sheet_info( (new_status) => {
 
-      let index = 0; 
-      while( index < json_counter(status) ) { 
-
-         if (status[index]["topic"] == "skills") { //check if the skill already exists in the character sheet
-         
-            if (status[index]["name"] == selected_skill_name) {
+            //console.log(new_status); //DEBUG
+            let index = 0; 
+            while( index < json_counter(new_status) ) { 
                
-               create_skill_block(skill_index, status, skills_panel_div);
+               if (new_status[index]["topic"] == "skills") { //check if the skill already exists in the character sheet
+                  
+                  if (new_status[index]["name"] == selected_skill_name) {
+                     
+                     create_skill_block(index, new_status, skills_panel_div);
+                  }
+               }
+               
+               index++;
             }
-         }
-         
-         index++;
-      }
+         });
+      });
    }
-
 }
 
 const skill_delete = (select_skill_element) => {
@@ -462,7 +528,17 @@ const skill_delete = (select_skill_element) => {
    const select = document.getElementById(select_skill_element);
    const selected_skill_name = select.value;
    const selected_skill_block = document.getElementById( "".concat( selected_skill_name, "_block" ) );
-   selected_skill_block.remove();
+
+   if (selected_skill_block == null) {
+
+      show_message('Unable to delete no such skill!', 'error');
+     
+   }else{
+
+      delete_character_sheet_info("skill", selected_skill_name, "name", selected_skill_name, () =>{
+         selected_skill_block.remove();
+      });
+   }
 }
 
 
@@ -543,6 +619,85 @@ function create_skill_block(index, status, skills_panel_div){
    skill_down_div.className = "pc_stats_corner_down";
    skill_down_div.addEventListener("click",() => { down_skill_value( skill_name ) },false);
    skill_block.appendChild(skill_down_div);
+}
+
+//SHEET UI - WEAPON BLOCK CREATION
+function create_weapon_block(index, status, weapons_panel_div){
+   let weapon_name = status[index]["name"];
+
+   const weapon_block = document.createElement("div");
+   weapon_block.id = "".concat(status[index]["name"],"_block");
+   weapon_block.className = "pc_stats_block pc_stats_block_long";
+   weapon_block.style.width = "100%";   
+   weapons_panel_div.appendChild(weapon_block);
+
+   const weapon_header = document.createElement("div");
+   weapon_header.className = "pc_stats_block_header";
+   weapon_header.textContent = "".concat( status[index]["category"] , " - " , status[index]["name"] );
+   weapon_block.appendChild(weapon_header);
+
+   //this works as a button 
+   const weapon_info_div = document.createElement("div");
+   weapon_info_div.style.marginTop = "6px"; 
+   weapon_info_div.style.height = "auto"; 
+   weapon_info_div.style.width = "auto"; 
+   weapon_info_div.addEventListener("click",() => { roll_skill_value( weapon_name ) },false)
+   weapon_block.appendChild(weapon_info_div);
+
+   var row, cel1, cel2, cel3;
+   const weapon_table = document.createElement("table");
+   weapon_table.style.width = "100%";
+   row = weapon_table.insertRow(0);
+   cel1 = row.insertCell(0);
+   cel2 = row.insertCell(1);
+   cel3 = row.insertCell(2);
+   weapon_info_div.appendChild(weapon_table);
+
+   const cel1_label = document.createElement("label");
+   cel1_label.textContent = "Level: ";
+   cel1.appendChild(cel1_label);
+
+   const cel1_input = document.createElement("input");
+   cel1_input.className = "pc_stats_block_level";
+   cel1_input.id = "".concat(status[index]["name"],"_value");
+   cel1_input.name = "".concat(status[index]["name"],"_value");
+   cel1_input.value = status[index]["value"];
+   cel1.appendChild(cel1_input);
+
+   const cel2_label = document.createElement("label");
+   cel2_label.textContent = "Stat: ";
+   cel2.appendChild(cel2_label);
+
+   const cel2_input = document.createElement("input");
+   cel2_input.className = "pc_stats_block_level";
+   cel2_input.id = "".concat(status[index]["name"],"_type");
+   cel2_input.name = "".concat(status[index]["name"],"_type");
+   cel2_input.value = status[index]["stat_name"];
+   cel2.appendChild(cel2_input);
+
+   const cel3_label = document.createElement("label")
+   cel3_label.textContent = "Base: ";
+   cel3.appendChild(cel3_label);
+
+   const cel3_input = document.createElement("input");
+   cel3_input.className = "pc_stats_block_level";
+   cel3_input.id = "".concat(status[index]["name"],"_base");
+   cel3_input.name = "".concat(status[index]["name"],"_base");
+   cel3_input.value = ( parseInt(status[index]["value"]) + 
+   parseInt(status[index]["stat_value"]) ).toString();
+   cel3.appendChild(cel3_input);
+
+   //upbutton
+   const weapon_up_div = document.createElement("div");
+   weapon_up_div.className = "pc_stats_corner_up";
+   weapon_up_div.addEventListener("click",() => {  up_ammo_value( weapon_name ) },false);
+   weapon_block.appendChild(weapon_up_div);
+   
+   //upbutton
+   const weapon_down_div = document.createElement("div");
+   weapon_down_div.className = "pc_stats_corner_down";
+   weapon_down_div.addEventListener("click",() => { down_ammo_value( weapon_name ) },false);
+   weapon_block.appendChild(weapon_down_div);
 }
 
 
@@ -771,6 +926,81 @@ const build_ui = (status) =>{
    skills_add.value = "Add";
    skills_add.addEventListener("click",() => { skill_add( "select_skills" , status, skills_div) },false);
    skills_operation_div.appendChild(skills_add);
+
+
+   //WEAPONS
+   const weapons_sub_title = document.createElement("h4");
+   weapons_sub_title.className = "pc_forms_text";
+   weapons_sub_title.textContent = "Weapons";
+   sheet.appendChild(weapons_sub_title);
+   
+   const weapons_form = document.createElement("form");
+   weapons_form.setAttribute("method", "post"); 
+   weapons_form.setAttribute("action", ""); 
+   weapons_form.id = "weapons_form";
+   sheet.appendChild(weapons_form);
+
+   const weapons_form_inner_div = document.createElement("div");
+   weapons_form_inner_div.className = "pc_stats_panel";
+   weapons_form.appendChild(weapons_form_inner_div);
+
+   const weapons_div = document.createElement("div");
+   weapons_div.id = "weapons_panel";
+   weapons_div.style.width = "100%";
+   weapons_div.style.margin = "10px";
+   weapons_form_inner_div.appendChild(weapons_div);
+
+
+   //skill block
+   index = 0; 
+   while( index < json_counter(status) ) {
+      
+      if (status[index]["topic"] == "weapons") {
+         
+         create_skill_block(index, status, weapons_div);
+      }
+      index++;
+   }
+      
+   const weapons_operation_div = document.createElement("div");
+   weapons_operation_div.style.margin = "10px";
+   weapons_operation_div.style.width = "100%";
+   weapons_form_inner_div.appendChild(weapons_operation_div);
+
+   const weapons_select = document.createElement("select");
+   weapons_select.id = "weapons_skills";
+   weapons_select.className = "pc_selectbox pc_skill_selectbox";
+   weapons_select.name = "weapons";
+   weapons_operation_div.appendChild(weapons_select);
+   
+   index = 0; 
+   while( index < json_counter(status) ) {
+   
+      if (status[index]["topic"] == "all_weapons") {
+         const weapons_option = document.createElement("option");
+         weapons_option.className = "pc_skill_selectbox_option";
+         weapons_option.value = status[index]["name"];
+         weapons_option.textContent = status[index]["name"];
+         weapons_select.appendChild(weapons_option);
+      }
+
+      index++;
+   }
+   
+   const weapons_delete = document.createElement("input");
+   weapons_delete.type = "button";
+   weapons_delete.className = "pc_stat_block_button";
+   weapons_delete.value = "Delete";
+   weapons_delete.addEventListener("click",() => { skill_delete( "select_skills" ) },false);
+   weapons_operation_div.appendChild(weapons_delete);
+   
+   const weapons_add = document.createElement("input");
+   weapons_add.type = "button";
+   weapons_add.className = "pc_stat_block_button";
+   weapons_add.style.margin = "0px 10px 0px 0px";
+   weapons_add.value = "Add";
+   weapons_add.addEventListener("click",() => { skill_add( "select_skills" , status, weapons_div ) },false);
+   weapons_operation_div.appendChild(weapons_add);
 }
 
 

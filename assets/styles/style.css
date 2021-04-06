@@ -80,6 +80,26 @@
         filter: drop-shadow(0px 0px 2px var(--lightgray));}
   }
 
+@keyframes translateXleftvanish {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    10% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    85%{
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100%{
+        transform: translateX(0);
+        opacity: 0;
+    }
+}
+
+
 select:focus {outline:none;}
 input:focus {outline:none;}
 ::-moz-focus-inner {border:none !important;}
@@ -274,6 +294,55 @@ td, th{
     animation: blinklight 200ms linear;
 }
 
+/*MESSAGE PANEL------------------------------------------------------------------------*/
+.pc_message_panel{
+    z-index:4;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: 30px;
+    background-color: var(--darkgray);
+    color: var(--palepink);
+    font-size: 16px;
+    padding: 8px 8px 0 60px;
+    filter: drop-shadow(0px 0px 6px #000055);
+    animation: translateXleftvanish 3000ms ease-in-out 1 forwards;
+}.pc_message_panel::after{
+    position: absolute;
+    right: -10px    ;
+    top: 0;
+    content: '';
+    width: 10px;
+    height: 38px;
+    background-color: var(--emagenta);
+}
+.pc_message_panel_error{
+    
+    color: var(--emagenta);
+    font-weight:bolder;
+}
+.pc_message_panel_exit_icon{
+    color: var(--palepink) ! important;
+    vertical-align: bottom;
+    font-weight:normal;
+    font-size: 22px;
+}
+.pc_message_panel_exit_icon:hover{
+    color: var(--emagenta) ! important;
+    vertical-align: bottom;
+    font-weight:bolder;
+    font-size: 22px;
+}
+
+.pc_message_close_button{
+    margin-left: 4px;
+ 
+    color: var(--emagenta);
+    font-weight: bolder;
+}
+
+
 /*NAVBAR ------------------------------------------------------------------------------*/
 .pc_entrance_navbar{
 	z-index:5;
@@ -299,7 +368,6 @@ td, th{
     }
    
 }
-
 .pc_entrance_navbar::after {
   position: absolute;
   content: '';
@@ -772,7 +840,7 @@ td, th{
 .pc_stats_block_long{
     width: 100%;
     height: 60px;
-    margin: 10px 0 0 0;
+    margin: 0 0 10px 0;
     padding: 5px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

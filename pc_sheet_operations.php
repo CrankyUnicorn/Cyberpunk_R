@@ -3,6 +3,11 @@
 	include_once 'connection.php';
 	include_once 'input_cleaner.php';
 	
+	/*
+	*This operations are ONLY allowed to happen in the relational
+	*tables even if the user tries to hack the target table it
+	*will always point to a relational table sufixed with the "pc_"
+	*/
 
 	if(session_id() == '' || !isset($_SESSION)) {
     //if session isn't started
@@ -114,6 +119,30 @@
 			trigger_error(mysqli_error($connection));
 			exit();
 		}
+
+
+		//query for character skills
+		$sql = "SELECT * FROM weapons WHERE id IN
+		( SELECT weapon_id 
+		FROM pc_weapons 
+		WHERE pc_id = $pc )";
+		
+		$stmt_skills = mysqli_query( $connection, $sql);
+		
+		if (!$stmt_skills) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+
+
+		$sql = "SELECT name FROM weapon";
+
+		$stmt_all_weapons = mysqli_query( $connection, $sql);
+		
+		if (!$stmt_all_weapons) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
 	
 
 		//echo json_encode($stmt);
@@ -141,17 +170,28 @@
 		}
 		
 		
+		while ($result = mysqli_fetch_assoc($stmt_weapons)) {
+			$result['topic'] = 'weapons';
+			$rows[] = $result;
+		}
+
+		
+		while ($result = mysqli_fetch_assoc($stmt_all_weapons)) {
+			$result['topic'] = 'all_weapons';
+			$rows[] = $result;
+		}
+		
 		echo json_encode($rows);
 		
 		exit();
 
-	}else if (isset($_POST['select'])) { //USE TO VIEW RELATIONAL TABLES
+	}else if (isset($_POST['select'])) { //USE TO SELECT RELATIONAL TABLES
 		
 		$keywordOne = "pc"; //player character
 		$keywordTwo = ms_escape_string($_POST["table"]);
 
 
-		if(!preg_match("/^[a-zA-Z0-9_]*$/",$keywordTwo)){
+		if(!preg_match("/^[a-zA-Z0-9_\- ]*$/",$keywordTwo)){
 			trigger_error("Error invalid character!");
 			exit();
 		}
@@ -191,6 +231,55 @@
 		
 		exit();
 
+	}else if (isset($_POST['delete'])) { //USE TO DELETE RELATIONAL TABLES
+		
+		$keywordOne = "pc"; //player character
+		$keywordTwo = ms_escape_string($_POST["table"]);
+		$keywordThree = ms_escape_string($_POST["column"]);
+		$keywordFour = ms_escape_string($_POST["name"]);
+		$keywordFive = ms_escape_string($_POST["value"]);
+
+		
+		if(!preg_match("/^[a-zA-Z0-9_\- ]*$/",$keywordFive) ||
+			!preg_match("/^[a-zA-Z0-9_]*$/",$keywordTwo) ||
+			!preg_match("/^[a-zA-Z0-9_]*$/",$keywordThree) || 
+			!preg_match("/^[a-zA-Z0-9_\- ]*$/",$keywordFour)){
+			trigger_error("Error invalid character!");
+			exit();
+		}
+
+		$tableRelation = $keywordOne."_".$keywordTwo;
+		$firstId = $keywordOne."_id";
+		$secondId = $keywordTwo."_id";
+		$tableColumn = $keywordThree;
+		$tableValue = $keywordFive;
+	
+		$tableOne = $keywordOne;
+		$tableOneId = $_SESSION['u_pc']; 
+	
+		$tableTwo = $keywordTwo;
+		$tableTwoId = "";
+		$tableTwoName =  $keywordFour;
+
+
+		//query for table
+		$sql = "DELETE FROM $tableRelation 
+		WHERE $secondId IN
+		( SELECT id
+		FROM $tableTwo 
+		WHERE $tableColumn = '".$tableValue."' ) 
+		AND 
+		( $firstId = '".$tableOneId."' )";
+
+		$stmt = mysqli_query( $connection, $sql);
+		
+		if (!$stmt) {
+			trigger_error(mysqli_error($connection));
+			exit();
+		}
+		
+		exit();
+
 
 	}else if (isset($_POST['insert'])) { 	//FOR USE IN RELATIONAL TABLES
 
@@ -204,7 +293,7 @@
 		if(!preg_match("/^[0-9]*$/",$keywordFive) ||
 			!preg_match("/^[a-zA-Z0-9_]*$/",$keywordTwo) ||
 			!preg_match("/^[a-zA-Z0-9_]*$/",$keywordThree) || 
-			!preg_match("/^[a-zA-Z0-9_]*$/",$keywordFour)){
+			!preg_match("/^[a-zA-Z0-9_\- ]*$/",$keywordFour)){
 			trigger_error("Error invalid character!");
 			exit();
 		}
